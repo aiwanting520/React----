@@ -2,7 +2,7 @@
  包含多个用于生成新的state的reducer函数的模块
  */
 import {combineReducers} from 'redux'
-import {AUTH_SUCCESS,ERROR_MSG} from './action-types';
+import {AUTH_SUCCESS,ERROR_MSG,UPDATE_USER,RESET_USER} from './action-types';
 import {getRedirectPath} from '../utils';
 const initUserState = {
     username: '',
@@ -17,6 +17,10 @@ function user(preState = initUserState,action) {
             return {username:action.data.username,type:action.data.type,msg:'',redirectTo:getRedirectPath(action.data.type,action.data.header)};
         case ERROR_MSG:
             return {...action.data}//{msg:result.msg,username:data.username,type:data.type}
+        case UPDATE_USER:
+            return action.data;
+        case RESET_USER:
+            return {...action.data}
         default:
             return preState;
     }

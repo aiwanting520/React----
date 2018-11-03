@@ -1,8 +1,14 @@
-import {AUTH_SUCCESS,ERROR_MSG} from './action-types'
-import {reqRegister} from '../api/index';
+import {AUTH_SUCCESS,ERROR_MSG,UPDATE_USER,RESET_USER} from './action-types'
+import {reqRegister,reqUpdateUserInfo} from '../api/index';
 
 export const authSuccess = user =>({type:AUTH_SUCCESS,data:user});
 export const errMsg = msg =>({type:ERROR_MSG,data:msg});
+
+export const updateUser = user =>({type:UPDATE_USER,data:user});
+export const resetUser = msg =>({type:RESET_USER,data:msg});
+
+
+
 export const register = data=>{
     const {username,password,rePassword,type} = data;
     //同步表单验证
@@ -30,7 +36,36 @@ export const register = data=>{
         })
     }
 }
-
+//更新用户数据的异步action
+export const updateUserInfo = data=>{
+    const {header,post,company,salary,info} = data;
+    //同步表单验证
+    if(!header){
+        return resetUser({msg:'请选择头像'});
+    }else if(!post){
+        return resetUser({msg:'请输入招聘职位'});
+    }else if(!company){
+        return resetUser({msg:'请输入公司名称'});
+    }else if (!salary) {
+        return resetUser({msg: '请输入薪资范围'});
+    }else if (!info) {
+        return resetUser({msg: '请输入公司简介'});
+    }
+    return dispatch =>{
+        reqUpdateUserInfo(data)
+            .then(res=>{
+                const result = res.data;
+                if(result.code === 0){
+                    dispatch(updateUser(result.data));
+                }else{
+                    dispatch(resetUser({msg:result.msg}));
+                }
+            })
+            .catch(err=>{
+                dispatch(resetUser({msg:'网络输入不稳定，请重试'}));//这里的data指的是从用户拿到的数据
+            })
+    }
+}
 /*
   修改步骤：
   1. actions / action-types
