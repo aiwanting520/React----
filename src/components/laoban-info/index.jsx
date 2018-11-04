@@ -26,7 +26,7 @@ class LaobanInfo extends Component{
         })
     }
     saveUserInfo = header =>{
-        this.props.updateUserInfo(this.state);
+        this.props.updateUserInfo({...this.state,type:'laoban'})
     }
     render(){
         const {msg} = this.props.user;

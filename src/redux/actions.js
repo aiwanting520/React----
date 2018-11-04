@@ -38,19 +38,25 @@ export const register = data=>{
 }
 //更新用户数据的异步action
 export const updateUserInfo = data=>{
-    const {header,post,company,salary,info} = data;
+    const {header,post,company,salary,info,type} = data;
     //同步表单验证
     if(!header){
         return resetUser({msg:'请选择头像'});
     }else if(!post){
-        return resetUser({msg:'请输入招聘职位'});
-    }else if(!company){
-        return resetUser({msg:'请输入公司名称'});
-    }else if (!salary) {
-        return resetUser({msg: '请输入薪资范围'});
+        return resetUser({msg:type === 'laoban'?'请输入招聘职位':'请输入应聘职位'});
     }else if (!info) {
-        return resetUser({msg: '请输入公司简介'});
+        return resetUser({msg: type === 'laoban'?'请输入公司简介':'请输入个人简介'});
     }
+
+    if(type === 'laoban'){
+        if(!company){
+            return resetUser({msg:'请输入公司名称'});
+        }
+        else if (!salary) {
+            return resetUser({msg: '请输入薪资范围'});
+            }
+    }
+
     return dispatch =>{
         reqUpdateUserInfo(data)
             .then(res=>{
