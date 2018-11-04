@@ -1,5 +1,5 @@
 import {AUTH_SUCCESS,ERROR_MSG,UPDATE_USER,RESET_USER} from './action-types'
-import {reqRegister,reqUpdateUserInfo} from '../api/index';
+import {reqRegister,reqUpdateUserInfo,reqgetUserInfo} from '../api/index';
 
 export const authSuccess = user =>({type:AUTH_SUCCESS,data:user});
 export const errMsg = msg =>({type:ERROR_MSG,data:msg});
@@ -70,6 +70,25 @@ export const updateUserInfo = data=>{
             .catch(err=>{
                 dispatch(resetUser({msg:'网络输入不稳定，请重试'}));//这里的data指的是从用户拿到的数据
             })
+    }
+}
+//获取用户信息的异步方法
+export const getUserInfo = ()=>{
+    return dispatch =>{
+        reqgetUserInfo()
+        .then(res=>{
+            const result = res.data;
+            if(result.code === 0){
+                //请求成功
+                dispatch(updateUser(result.data));
+            }else{
+                //请求失败
+                dispatch(resetUser({msg:result.msg}));
+            }
+        })
+        .catch(err=>{
+            dispatch(resetUser({msg:'网络输入不稳定，请重试'}));
+        })
     }
 }
 /*
